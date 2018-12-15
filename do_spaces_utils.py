@@ -20,6 +20,7 @@ SECRET_KEY=cp.get('basic','SECRET_KEY')
 REGION = cp.get('basic','REGION')
 BUCKET = cp.get('basic','BUCKET')
 
+
 def auth(bucket=BUCKET):
     """
     Должен  возвращать объект Bucket в котором хранятся все объекты

@@ -2,10 +2,9 @@
 from unittest import TestCase
 import unittest
 from do_spaces_utils import auth, MyBucket
-import do_spaces_utils
 import random
 import os
-import boto3
+
 
 class TestMyBucket(TestCase):
     def test_auth(self):
@@ -21,12 +20,11 @@ class TestMyBucket(TestCase):
         self.assertIsInstance(listfiles,list)
         print listfiles
 
-    def  test_getinitialpath(self):
+    def test_getinitialpath(self):
         key=u'Services_Irz_4.pdf'
-        key2 = u'\u0447\u0442\u043e-\u0442\u043e'
-        kee3 = u'\u041e\u0446\u0435\u043d\u043a\u0430_\u0440\u0430\u0431\u043e\u0442.docx'
+        # key2 = u'\u0447\u0442\u043e-\u0442\u043e'
+        # kee3 = u'\u041e\u0446\u0435\u043d\u043a\u0430_\u0440\u0430\u0431\u043e\u0442.docx'
         keywrong='test'
-        # bt = auth()
         bucket = MyBucket()
         # print type(bucket.getinitialpath(kee3))
         self.assertEqual(bucket.getinitialpath(key),'') ## должен возвращать пустую строку если  путь не указан
@@ -50,14 +48,13 @@ class TestMyBucket(TestCase):
         filename = u'/Users/denirz/BitTorrent Sync/iMedia/Интернет проекты/Grazia/GRAZIA iPhone 8 Plu.jpg'
         key = u'что-то от грации'
         # если файл не найден то надо поднять Assertion Eror:
-        self.assertRaises(AssertionError,bucket.putfile,filename, key)
+        self.assertRaises(AssertionError, bucket.putfile, filename, key)
 
         # если ключа нет, то в качестве ключа берем имя файла
         filename = u'/Users/denirz/BitTorrent Sync/iMedia/Интернет проекты/Grazia/GRAZIA iPhone 8 Plus.jpg'
-        # key = u''
-        key= bucket.putfile(filename)
+        key = bucket.putfile(filename)
         print u"Key submitted:{}".format(key)
-        self.assertEqual(key,filename)
+        self.assertEqual(key, filename)
         # self.assertRaises(AssertionError, bucket.putfile, filename, key)
 
         # если файла нет, то надо поднять тоже какуюто ошибку AssertionError
@@ -79,8 +76,6 @@ class TestMyBucket(TestCase):
         print "{:=^40}:{:=^40}".format("key","path")
         for i in zip(k,l):
             print u"{:>40}:{:<40}".format(i[0][-39:],i[1][-39:])
-
-
 
     def test_putdir(self):
         dirname=u'/Users/denirz/Downloads/russ-18/'
@@ -112,17 +107,14 @@ class TestMyBucket(TestCase):
 
         keylist = bucket.listfiles()
 
-        samplekey = random.sample(keylist,1)[0]
-        # print u"Sample Key:{}".format(samplekey)
-        res= bucket.downloadfile(key=samplekey,targetdir='.')
-        # print u"saved to {}".format(res)
+        samplekey = random.sample(keylist, 1)[0]
+        res= bucket.downloadfile(key=samplekey, targetdir='.')
         self.assertTrue(os.path.isfile(res))
         os.remove(res)
 
         samplekey = random.sample(keylist, 1)[0]
-        # print u"Sample Key:{}".format(samplekey)
         tempdir= '/Users/denirz'
-        assert  os.path.isdir(tempdir),"{} is not a directory".format(tempdir)
+        assert os.path.isdir(tempdir), "{} is not a directory".format(tempdir)
         res = bucket.downloadfile(key=samplekey, targetdir=tempdir)
         # print u"saved to {}".format(res)
         self.assertTrue(os.path.isfile(res))
@@ -135,7 +127,6 @@ class TestMyBucket(TestCase):
         # print u"saved to {}".format(res)
         self.assertTrue(os.path.isfile(res))
         os.remove(res)
-
 
         with self.assertRaises(AssertionError):
             res = bucket.downloadfile(key=samplekey,targetdir="/home/ds")  # no taargetdir
@@ -152,8 +143,8 @@ class TestMyBucket(TestCase):
             print res
 
     def test_deletfile(self):
-        bucket=MyBucket()
-        keylist=bucket.listfiles()
+        bucket = MyBucket()
+        keylist = bucket.listfiles()
         key = random.choice(keylist)
         print u"Selected {}".format(key)
         bakfile = bucket.downloadfile(key=key)
@@ -161,7 +152,7 @@ class TestMyBucket(TestCase):
         self.assertEqual(res,0) # 0 возвращается если код ответа 200 +/-
         with self.assertRaises(Exception):
             bucket.deletefile(key=key)
-        bucket.putfile(filepath=bakfile,key=key)
+        bucket.putfile(filepath=bakfile, key=key)
 
     @unittest.skip("нужен только для отладки")
     def test_debug(self):
