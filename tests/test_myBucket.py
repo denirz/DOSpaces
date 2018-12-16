@@ -4,7 +4,7 @@ import unittest
 from do_spaces_utils import auth, MyBucket
 import random
 import os
-import  time
+import time
 
 class TestMyBucket(TestCase):
     def test_auth(self):
