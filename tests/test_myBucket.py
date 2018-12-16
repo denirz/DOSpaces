@@ -4,7 +4,7 @@ import unittest
 from do_spaces_utils import auth, MyBucket
 import random
 import os
-
+import  time
 
 class TestMyBucket(TestCase):
     def test_auth(self):
@@ -79,6 +79,7 @@ class TestMyBucket(TestCase):
 
     def test_putdir(self):
         dirname=u'/Users/denirz/Downloads/russ-18/'
+        # dirname=u'/Users/denirz/Documents/Ideas/'
         # dirname=u'/Users/denirz/Downloads/Telegram Desktop/'
         # dirname=u'/Users/denirz/Documents/Ideas/SkolTech/'
         bucket=MyBucket()
@@ -154,7 +155,25 @@ class TestMyBucket(TestCase):
             bucket.deletefile(key=key)
         bucket.putfile(filepath=bakfile, key=key)
 
-    @unittest.skip("нужен только для отладки")
+    # @unittest.skip("нужен только для отладки")
     def test_debug(self):
         b = MyBucket()
+        # key = b.putfile(u'/Users/denirz/Downloads/13 July 2018/IMG_4759.jpg')
+        # print key
+        # b.list_key_prefix(prefix=u'/Users/denirz/BitTorrent Sync/iMedia/Интернет проекты/')
+        # res = b.list_key_prefix(prefix=u'/Users/denirz/Documents')
+        res = b.list_key_prefix(prefix=u'd')
+        # print res
+        self.assertGreater(len(res),1)
+
         pass
+    def test_timeit(self):
+        ar=0.
+        iters = 20
+        for i in range(iters):
+            start  = time.time()
+
+            self.test_debug()
+            # print "T {} sec".format(time.time()-start)
+            ar = ar + (time.time()-start)
+        print ar/iters

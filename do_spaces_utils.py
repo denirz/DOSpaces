@@ -5,8 +5,8 @@ import botocore
 import os
 import re
 import random,string
+import magic
 
-import sys
 cp=ConfigParser.ConfigParser()
 configname='spaces.cfg'
 cp.read(configname)
@@ -69,14 +69,14 @@ class MyBucket(object):
         abspath = os.path.abspath(filepath)
         assert os.path.isfile(abspath), u"File {} is not a file ".format(abspath)
         if not key:
-            key=abspath
-        path = abspath.encode('unicode-escape')
+            key=re.sub('\s\s+',' ',abspath)
+        path = re.sub('\s\s+',' ',abspath).encode('unicode-escape')
         created = self.bucket.Object(key)
         md={'initialpath':path}
-        #todo добавлять content type в метаданные
-        #todo что-то сделать со случаем двойных пробелов в названии  файла
+        content_type = magic.from_file(abspath, mime=True)
+        # print abspath
         res = created.put(Body=open(abspath,'rb'),
-                          Metadata=md
+                          Metadata=md,ContentType=content_type
                           )
         assert res['ResponseMetadata']['HTTPStatusCode']==200, "ERROR:  Response {}".format(res['ResponseMetadata']['HTTPStatusCode'])
         return key
@@ -189,8 +189,20 @@ class MyBucket(object):
         else:
             return res['ResponseMetadata']['HTTPStatusCode']
 
+    def list_key_prefix(self,prefix=''):
+        """
+        Возвращает список ключей с  начинающихся с префиcа prefix.
+        :param prefix:
+        :return:
+        """
 
-
+        res = []
+        # for obj in self.bucket.objects.all():
+        #     if obj.key.startswith(prefix):
+        #         res.append(obj.key)
+        for obj in self.bucket.objects.filter(Prefix=prefix):
+            res.append(obj.key)
+        return res
 
 
 
