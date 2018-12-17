@@ -54,6 +54,47 @@ class Testdofile(TestCase):
         # self.assertRegexpMatches(res,'optional arguments')
         print res
 
+    def test_list_k(self):
+        key = u'/Users/denirz/Documents/Ideas/GlobalTelecom/Учет времени/Июнь 2014/ А'
+        cmd = self.cmd
+        cmd.append('-l')
+        cmd.append('-k')
+        cmd.append(key)
+        print cmd
+        res = subprocess.check_output(cmd,)
+        self.assertRegexpMatches(res,"GlobalTelecom/Учет")
+        print res
+
+    def test_upload_file(self):
+        cmd=self.cmd
+        cmd.append('-u')
+        cmd.append(u'/Users/denirz/Documents/CV/выход  из сумасшествия.pages')
+        print cmd
+        res = subprocess.check_output(cmd)
+        self.assertRegexpMatches(res,'NEWKey=')
+        print res
+
+    @unittest.skip("not inplemented yet ")
+    def test_upload_key(self):
+        cmd=self.cmd
+        cmd.append('-u')
+        cmd.append(u'/Users/denirz/Documents/CV/выход  из сумасшествия.pages')
+        cmd.append('-k')
+        cmd.append('somestupid Key')
+        print cmd
+        res = subprocess.check_output(cmd)
+        print res
+        self.assertRegexpMatches(res,'Uploading')
+
+    def test_upload_catalog(self):
+        cmd=self.cmd
+        cmd.append('-u')
+        cmd.append(u'/Users/denirz/Dropbox/ТТК/')
+        print cmd
+        res = subprocess.check_output(cmd)
+        print res
+        self.assertRegexpMatches(res,'Uploading')
+
 
 
     def test_subparser(self):
@@ -67,23 +108,32 @@ class Testdofile(TestCase):
 
         cmd.append('-k')
         print cmd
-        res = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+        with self.assertRaises(subprocess.CalledProcessError):
+            res = subprocess.check_output(cmd)
+
         # self.assertRegexpMatches(res, 'optional arguments')
         print res
 
-        cmd.append(u'/asdasd kjhda/рол')
-        print cmd
-        res = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-        # self.assertRegexpMatches(res, 'optional arguments')
-        print res
-
-
-        cmd = self.cmd
-        cmd=cmd[:-1]
-        # cmd.append('-u')
-        # cmd.append('source')
+        cmd.append(u'asdasdkjhda')
         print cmd
         res = subprocess.check_output(cmd)
         # self.assertRegexpMatches(res, 'optional arguments')
         print res
+
+    def test_download(self):
+        cmd = self.cmd
+        cmd.append('-d')
+        print cmd
+        res = subprocess.check_output(cmd)
+        # self.assertRegexpMatches(res, 'optional arguments')
+        print res
+
+        # cmd = self.cmd
+        # cmd=cmd[:-1]
+        # cmd.append('-u')
+        # cmd.append('source')
+        # print cmd
+        # res = subprocess.check_output(cmd)
+        # self.assertRegexpMatches(res, 'optional arguments')
+        # print res
 
