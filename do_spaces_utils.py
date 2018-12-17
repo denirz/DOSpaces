@@ -156,7 +156,7 @@ class MyBucket(object):
     def downloadfile(self,**kwargs):
         """
         :param kwargs:
-        :param keys:(unicode): если не представлен то ошибка  поднимается
+        :param key:(unicode): если не представлен то ошибка  поднимается
         :param targetdir: -  каталог в который надо записать файл.если не представлен то  текущий.
         :return:
         """
@@ -171,7 +171,11 @@ class MyBucket(object):
             #todo  сделать попытку достать имя файла из метаданных.
             filename = u''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(8)])
             filename = u".".join((filename, u"tmp"))
-        self.bucket.download_file(key,filename)
+        try:
+            self.bucket.download_file(key,filename)
+        except Exception as e:
+            # print e
+            raise AssertionError("Key not found")
         return os.path.abspath(filename)
 
     def deletefile(self,key='',**kwargs):
