@@ -167,6 +167,25 @@ class TestMyBucket(TestCase):
         self.assertGreater(len(res),1)
 
         pass
+
+    def test_listKeyPrefix(self):
+        prefix = '/Users/'
+        b=MyBucket()
+        res=b.list_key_prefix(prefix)
+        self.assertGreater(len(res),1)
+        # res = b.list_key_prefix(prefix,depth=1)
+        print "-"*10
+        # for i in res:
+        #     print i
+
+        self.assertGreater(len(res), 0)
+        for depth in range(1,8):
+            res = b.list_key_prefix(prefix, depth=depth)
+            print "depth {}, len {}:".format(depth,len(res))
+            # for item in res:
+            #     print item
+            self.assertGreater(len(res),0)
+
     def test_timeit(self):
         ar=0.
         iters = 20

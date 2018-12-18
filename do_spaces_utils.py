@@ -197,7 +197,7 @@ class MyBucket(object):
         else:
             return res['ResponseMetadata']['HTTPStatusCode']
 
-    def list_key_prefix(self,prefix=''):
+    def list_key_prefix(self,prefix='',depth=0):
         """
         Возвращает список ключей с  начинающихся с префиcа prefix.
         :param prefix:
@@ -205,11 +205,19 @@ class MyBucket(object):
         """
 
         res = []
-        # for obj in self.bucket.objects.all():
-        #     if obj.key.startswith(prefix):
-        #         res.append(obj.key)
+        uniqueset = set()
+        searchstring = prefix + "(.*?/){" + str(depth) + "}[^/]*/?"
+        pattern  = re.compile(searchstring)
         for obj in self.bucket.objects.filter(Prefix=prefix):
             res.append(obj.key)
+            if depth:
+                # print u"Key:{}".format(obj.key)
+                found = pattern.search(obj.key)
+                if found:
+                    uniqueset.add(found.group())
+                    # print "Group:{}".format(found.group())
+        if depth and uniqueset:
+            return uniqueset
         return res
 
 

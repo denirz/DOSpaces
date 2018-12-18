@@ -33,6 +33,15 @@ def main():
                         type=lambda s: unicode(s, 'utf8'),
                         help='Remote file key',)
 
+    parser.add_argument('--depth',
+                        action='store',
+                        nargs=1,
+                        dest='depth',
+                        required=False,
+                        # default="-",
+                        type=int,
+                        help='Directory Depth while listing', )
+
     parser.add_argument('--delete',
                         action='store_true',
                         # nargs=,
@@ -56,9 +65,15 @@ def main():
                 print key
             exit(0)
         else:
-            print u"keys with prefix \"{}\"".format(res.key[0])
-            for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0]):
-                print key
+            if res.depth:
+                print u"keys with prefix \"{}\" and depth {}".format(res.key[0],res.depth[0])
+                for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0],depth=res.depth[0]):
+                    print key
+                pass
+            else:
+                print u"keys with prefix \"{}\"".format(res.key[0])
+                for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0]):
+                    print key
             exit(0)
         exit(0)
 

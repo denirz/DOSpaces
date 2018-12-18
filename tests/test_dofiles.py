@@ -69,6 +69,20 @@ class Testdofile(TestCase):
         self.assertRegexpMatches(res,"GlobalTelecom/Учет")
         print res
 
+    def test_list_k_depth(self):
+        key = u'/Users/denirz/Documents/Ideas/GlobalTelecom/'
+        cmd = self.cmd
+        cmd.append('-l')
+        cmd.append('-k')
+        cmd.append(key)
+        cmd.append('--depth')
+        cmd.append('3')
+        print cmd
+        res = subprocess.check_output(cmd,)
+        # self.assertRegexpMatches(res,"GlobalTelecom/Учет")
+        print res
+
+
     def test_upload_file(self):
         cmd=self.cmd
         cmd.append('-u')
