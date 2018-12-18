@@ -18,9 +18,9 @@ def main():
                         )
 
     parser.add_argument("-d",'--download',
-                        action='store',
-                        nargs="*",
-                        dest= 'download',
+                        action='store_true',
+                        # nargs="*",
+                        dest= 'downloadfilename',
                         help='Download file '
                         )
 
@@ -34,13 +34,13 @@ def main():
                         help='Remote file key',)
 
     parser.add_argument('--delete',
-                        action='store',
-                        nargs=1,
+                        action='store_true',
+                        # nargs=,
                         dest='delete',
                         required=False,
                         # default="-",
-                        type=lambda s: unicode(s, 'utf8'),
-                        help='Remote file key', )
+                        # type=lambda s: unicode(s, 'utf8'),
+                        help='Delete file  <key> on remote storage', )
 
     res = parser.parse_args()
 
@@ -89,13 +89,35 @@ def main():
 
             exit(0)
 
-
-    if type(res.download)==list:
-        if ((not res.key) or res.key==u'-'):
+    if res.downloadfilename:
+        if not res.key:
             print "please provide key"
             exit(0)
-        print u"Downloading fie to directory {} with key {}".format(res.download,res.key)
+        key = res.key[0]
+        print u"Downloading file with key \"{}\"  to the current directory".format(key)
+        bucket = do_spaces_utils.MyBucket()
+        try:
+            fname = bucket.downloadfile(key=key)
+            print u"File \"{}\" downloaded".format(fname)
+        except AssertionError as e:
+            print "Key \"{}\" not found".format(key)
+        finally:
+            exit(0)
 
+    if res.delete:
+        if not res.key:
+            print "please provide key"
+            exit(0)
+        key = res.key[0]
+        print u"Deleting  file with key \"{}\"  from  the storage".format(key)
+        bucket = do_spaces_utils.MyBucket()
+        # try:
+        bucket.deletefile(key)
+        # except AssertionError as e:
+        #     print "Key \"{}\" not found".format(key)
+        # finally:
+        #     exit(0)
+        exit(0)
 
     # subparser = parser.add_subparsers(help="Command to do")
     # parser_lists=subparser.add_parser('list',help='List files')

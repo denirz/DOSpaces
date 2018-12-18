@@ -1,8 +1,12 @@
 #coding:utf-8
 from unittest import TestCase
+import unittest
 import os
 import sys
+import copy
+import re
 import subprocess
+import do_spaces_utils
 class Testdofile(TestCase):
     def setUp(self):
         self.cmd = [
@@ -121,12 +125,44 @@ class Testdofile(TestCase):
         print res
 
     def test_download(self):
+        """
+        просто загружаем  указывая только ключ
+        :return:
+        """
         cmd = self.cmd
         cmd.append('-d')
+        # cmd.append('-k')
+        # cmd.append('samplekey')
         print cmd
+        # with self.assertRaises(subprocess.CalledProcessError):
         res = subprocess.check_output(cmd)
-        # self.assertRegexpMatches(res, 'optional arguments')
         print res
+        self.assertRegexpMatches(res,'provide key')
+        cmd.append('-k')
+        print cmd
+        with self.assertRaises(subprocess.CalledProcessError):
+            res = subprocess.check_output(cmd)
+        print res
+        cmd.append('somekey')
+        print " ".join(cmd)
+        res = subprocess.check_output(cmd)
+
+
+        cmd.pop()
+        samplekey = 'd/ddddsds.jpg'
+        cmd.append(samplekey)
+        print " ".join(cmd)
+        res = subprocess.check_output(cmd)
+        print res
+        fname = re.findall(".*\"(.*)\"", res)
+        print "FNAME{}".format(fname)
+        filename =  os.path.abspath(fname[1])
+        print filename
+        print os.path.isfile(filename)
+        self.assertTrue(os.path.isfile(filename))
+        os.remove(filename)
+
+        # self.assertRegexpMatches(res, 'optional arguments')
 
         # cmd = self.cmd
         # cmd=cmd[:-1]
@@ -137,3 +173,33 @@ class Testdofile(TestCase):
         # self.assertRegexpMatches(res, 'optional arguments')
         # print res
 
+    def test_delete(self):
+        filename = '/Users/denirz/outfile.txt'
+        upload = copy.deepcopy(self.cmd)
+        upload.append('-u')
+        upload.append(filename)
+        print " ".join(upload)
+        res = subprocess.check_output(upload)
+        print res
+        listfiles = do_spaces_utils.MyBucket().list_key_prefix(filename)
+        self.assertIn(filename,listfiles)
+
+        delete = copy.deepcopy(self.cmd)
+        delete.append('--delete')
+        delete.append('-k')
+        delete.append(filename)
+        print " ".join(delete)
+        res = subprocess.check_output(delete)
+        print res
+        listfiles = do_spaces_utils.MyBucket().list_key_prefix(filename)
+        self.assertNotIn(filename,listfiles)
+
+
+    def test_keys_with_spaces(self):
+        key = '/Users/denirz/BitTorrent Sync/iMedia/'
+        self.cmd.append('-l')
+        self.cmd.append('-k')
+        self.cmd.append(key)
+        print " ".join(self.cmd)
+        res = subprocess.check_output(self.cmd)
+        print res

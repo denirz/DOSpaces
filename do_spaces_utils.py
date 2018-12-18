@@ -186,7 +186,11 @@ class MyBucket(object):
         :return:
         """
         assert type(key)==unicode or type(key)==str,u"Key={}:{} is not unicode ro string ".format(type(key),key)
-        self.bucket.Object(key).load() # нужно чтобы он падал когда ключ неправильный
+        try:
+            self.bucket.Object(key).load() # нужно чтобы он падал когда ключ неправильный
+        except Exception as e:
+            raise AssertionError("Key not found")
+
         res = self.bucket.Object(key).delete()
         if 300 > res['ResponseMetadata']['HTTPStatusCode']>=200:
             return 0
