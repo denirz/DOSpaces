@@ -2,6 +2,10 @@
 import argparse
 import do_spaces_utils
 import os
+import sys
+import codecs
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
+
 def main():
     parser = argparse.ArgumentParser(description='Digital Ocean Spaces Files')
 
@@ -66,12 +70,14 @@ def main():
             exit(0)
         else:
             if res.depth:
-                print u"keys with prefix \"{}\" and depth {}".format(res.key[0],res.depth[0])
+                print u"Keys with prefix \"{}\" and depth {}".format(res.key[0],res.depth[0])
                 for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0],depth=res.depth[0]):
+                    # print u"{}".format(key)
                     print key
+
                 pass
             else:
-                print u"keys with prefix \"{}\"".format(res.key[0])
+                print u"Keys with prefix \"{}\"".format(res.key[0])
                 for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0]):
                     print key
             exit(0)

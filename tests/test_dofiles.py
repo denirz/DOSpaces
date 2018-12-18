@@ -79,7 +79,7 @@ class Testdofile(TestCase):
         cmd.append('3')
         print cmd
         res = subprocess.check_output(cmd,)
-        # self.assertRegexpMatches(res,"GlobalTelecom/Учет")
+        self.assertRegexpMatches(res,"GlobalTelecom/Учет")
         print res
 
 

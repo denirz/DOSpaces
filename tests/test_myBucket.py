@@ -68,6 +68,7 @@ class TestMyBucket(TestCase):
         # print u"Key submitted:{}".format(key)
         # self.assertEqual(key, filename)
 
+    @unittest.skip("no reason to list all files anymore")
     def test_listinitialpath(self):
         bucket =MyBucket()
         l,k=bucket.list_initialpath()
