@@ -220,5 +220,26 @@ class MyBucket(object):
             return uniqueset
         return res
 
+    def generate_url(self,key,ExpiresIn=3600):
+        """
+        Должен по ключу возвращать URL по которому можно  каждому встречному файл скачать
+        :param key:
+        :param ExpiresIn:
+        :return:
+        """
 
-
+        s3c = boto3.client('s3',
+                            region_name=REGION,
+                            endpoint_url=URL,
+                            aws_access_key_id=ACCESS_KEY,
+                            aws_secret_access_key=SECRET_KEY,
+                            )
+        url = s3c.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={
+                'Bucket': BUCKET,
+                'Key': key
+                'ExpiresIn':ExpiresIn
+            }
+        )
+        return url

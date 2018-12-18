@@ -217,3 +217,4 @@ class Testdofile(TestCase):
         print " ".join(self.cmd)
         res = subprocess.check_output(self.cmd)
         print res
+

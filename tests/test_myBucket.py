@@ -197,3 +197,9 @@ class TestMyBucket(TestCase):
             # print "T {} sec".format(time.time()-start)
             ar = ar + (time.time()-start)
         print ar/iters
+
+    def test_generate_url(self):
+        key = '/Users/denirz/Movies/TrainingVideo/Yii framework/23 Урок план цмс.avi'
+        b=MyBucket()
+        url = b.generate_url(key)
+        print url
