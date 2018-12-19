@@ -8,7 +8,7 @@ import random,string
 import magic
 
 cp=ConfigParser.ConfigParser()
-configname='spaces.cfg'
+configname = os.path.join(os.path.dirname(__file__),'spaces.cfg')
 cp.read(configname)
 
 
