@@ -151,7 +151,7 @@ def main():
         except AssertionError as e:
             print u"Key \"{}\" not found, trying directory...".format(key)
             flist = bucket.downloadtoautopath(key)
-            print "Downloaded Files:"
+            print u"Downloaded Files:"
             for i in flist:
                 print i
 
