@@ -170,7 +170,7 @@ class TestMyBucket(TestCase):
         pass
 
     def test_listKeyPrefix(self):
-        prefix = '/Users/'
+        prefix = '/Users/denirz/Documents/Ideas/'
         b=MyBucket()
         res=b.list_key_prefix(prefix)
         self.assertGreater(len(res),1)
