@@ -220,6 +220,19 @@ class MyBucket(object):
             return uniqueset
         return res
 
+    def is_key_valid(self,key):
+        """
+        возвращает True если  ключ валиден или  падает в
+        :param key:
+        :return:
+        """
+        assert type(key) == unicode or type(key) == str, u"Key={}:{} is not unicode ro string ".format(type(key), key)
+        try:
+            self.bucket.Object(key).load()  # нужно чтобы он падал когда ключ неправильный
+        except Exception as e:
+            raise AssertionError("Key not found")
+        return True
+
     def generate_url(self,key,ExpiresIn=3600):
         """
         Должен по ключу возвращать URL по которому можно  каждому встречному файл скачать
@@ -228,6 +241,7 @@ class MyBucket(object):
         :return:
         """
 
+        self.is_key_valid(key)
         s3c = boto3.client('s3',
                             region_name=REGION,
                             endpoint_url=URL,
@@ -238,8 +252,8 @@ class MyBucket(object):
             ClientMethod='get_object',
             Params={
                 'Bucket': BUCKET,
-                'Key': key
-                'ExpiresIn':ExpiresIn
-            }
+                'Key': key,
+            },
+            ExpiresIn = ExpiresIn
         )
         return url

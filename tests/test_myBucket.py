@@ -199,7 +199,10 @@ class TestMyBucket(TestCase):
         print ar/iters
 
     def test_generate_url(self):
-        key = '/Users/denirz/Movies/TrainingVideo/Yii framework/23 Урок план цмс.avi'
+        key = '/Users/denirz/Downloads/Киоски.pdf'
         b=MyBucket()
         url = b.generate_url(key)
         print url
+        key = '/Users/denirz/Downloads/Киоски.pd'
+        with self.assertRaises(AssertionError):
+            url = b.generate_url(key)

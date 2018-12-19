@@ -10,8 +10,8 @@ import do_spaces_utils
 class Testdofile(TestCase):
     def setUp(self):
         self.cmd = [
-            'python',
-            '/Users/denirz/Documents/Development/DOSpaces/dofiles.py',
+                'python',
+                '/Users/denirz/Documents/Development/DOSpaces/dofiles.py',
         ]
     def test_run(self):
         res = os.system('python /Users/denirz/Documents/Development/DOSpaces/dofiles.py')
@@ -216,5 +216,30 @@ class Testdofile(TestCase):
         self.cmd.append(key)
         print " ".join(self.cmd)
         res = subprocess.check_output(self.cmd)
+        # print res
+        for line in res.split("\n"):
+            # print line
+            if line.startswith("/"):
+                self.assertRegexpMatches(line,'^'+key)
+
+
+
+    def test_get_url(self):
+        # key = '/Users/denirz/BitTorrent Sync/iMedia/'
+        key = 'd.d/ddddsds.jpg'
+        self.cmd.append('-k')
+        self.cmd.append(key)
+        self.cmd.append('--link')
+        self.cmd.append('2')
+        print " ".join(self.cmd)
+        res = subprocess.check_output(self.cmd)
         print res
 
+        key = '/Users/denirz/BitTorrent Sync/iMedia/'
+        cmdwrongkey = ['python',
+                            '/Users/denirz/Documents/Development/DOSpaces/dofiles.py',
+                            '-k',key,'--link','2']
+        res = subprocess.check_output(cmdwrongkey)
+        print res
+        self.assertRegexpMatches(res,key)
+        self.assertRegexpMatches(res,'not found')

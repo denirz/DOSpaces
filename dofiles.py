@@ -55,6 +55,16 @@ def main():
                         # type=lambda s: unicode(s, 'utf8'),
                         help='Delete file  <key> on remote storage', )
 
+    parser.add_argument('--link',
+                        action='store',
+                        nargs='*',
+                        dest='validitytime',
+                        required=False,
+                        type=int,
+                        # default="-",
+                        # type=lambda s: unicode(s, 'utf8'),
+                        help='Create link for file  <key> on remote storage', )
+
     res = parser.parse_args()
 
     print "RES:{}".format(res)
@@ -83,6 +93,24 @@ def main():
             exit(0)
         exit(0)
 
+    if res.validitytime != None:  #   то есть если флаг link вообще установлен
+        validitytime = 3600  if len(res.validitytime)==0 else res.validitytime[0]*3600
+
+        if not res.key:
+            print "please ptovide key!"
+            exit(0)
+        key = res.key[0]
+        # print u"Generating Url file with key \"{}\"  to the current directory".format(key)
+        bucket= do_spaces_utils.MyBucket()
+        try:
+            bucket.is_key_valid(key)
+        except AssertionError:
+            print u"Key {} not found".format(key)
+            exit(0)
+        url=bucket.generate_url(key,ExpiresIn=validitytime)
+        print u"Generating Url file with key \"{}\"  to the current directory".format(key)
+        print url
+        print "link valid during {} hours".format(validitytime / 3600)
 
     if res.uploadfile:
         """
