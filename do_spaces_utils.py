@@ -51,6 +51,34 @@ def checkfilename(inputstr):
     else:
         return False
 
+def getdir(inputstr):
+    '''
+    возвращает самый длинный существующий каталог из указанной входной строки ( ключа)
+    :param inputstr:
+    :return:
+    '''
+    parts = inputstr.split('/')
+    for i in range(len(parts)):
+        res = "/".join(parts[:-(i+1)])
+        if os.path.isdir(res):
+            return res.rstrip('/')
+    return '/'
+
+def create_subdir_structure(inputstr):
+    """
+    создает структуру каталогов соответсвующую основной
+    :param inputstr:
+    :return:
+    """
+    existdir = getdir(inputstr)
+    pattern = re.compile(existdir+'/(.*)/[^/]*')
+    try:
+        tocreate = pattern.search(inputstr).group(1)
+    except AttributeError:
+        return 0
+    os.makedirs(existdir +'/'+tocreate)
+    return existdir +'/'+tocreate
+
 
 class MyBucket(object):
     def __init__(self,bucket=BUCKET,*args,**kwargs):
@@ -177,6 +205,41 @@ class MyBucket(object):
             # print e
             raise AssertionError("Key not found")
         return os.path.abspath(filename)
+
+    def downloadtoautopath(self,key):
+        """
+        должна по ключу проверять наличие каталога и при необходимости его создавать.  а потом в этот каталог должна
+        скачивать требуемый файл.
+        :param key:
+        :return:
+        """
+        assert key, "Please provide key "
+        assert type(key)==str or type(key)==unicode, "Invalid Key Type "
+        assert key.startswith("/"), "Key should  starts with /!"
+        try:
+            self.is_key_valid(key)
+        except AssertionError:
+            """
+            ключа такого нет но может подойти по фильтру           
+            """
+            keys = self.list_key_prefix(key)
+            listfiles =[]
+            for key in keys:
+                res = self.downloadtoautopath(key)
+                listfiles.append(res)
+            return listfiles
+
+
+
+        res = create_subdir_structure(key)
+        if res:
+            # print res
+            targetdir = res
+        else:
+            targetdir = getdir(key)
+        res = self.downloadfile(key=key,targetdir=targetdir)
+        return res
+        pass
 
     def deletefile(self,key='',**kwargs):
         """

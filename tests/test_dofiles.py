@@ -187,6 +187,19 @@ class Testdofile(TestCase):
         # self.assertRegexpMatches(res, 'optional arguments')
         # print res
 
+    def test_download_directory(self):
+        dir = u'/Users/denirz/Documents/From Previous/OldDocuments/Нис/04_WEB Сервер/vmswebclient_distr/WMS-web_client/yii/framework/views/sv'
+        # dir = u'/Users/denirz/Documents/From Previous/OldDocuments/Нис/04_WEB Сервер/vmswebclient_distr/WMS-web_client/yii/framework/'
+        self.cmd.append('-d')
+        # self.cmd.append('-h')
+        self.cmd.append('-k')
+        self.cmd.append(dir)
+        print u" ".join(self.cmd)
+        res = subprocess.check_output(self.cmd)
+        print type(res)
+        print res.decode('utf-8')
+        self.assertTrue(os.path.isdir(dir))
+
     def test_delete(self):
         filename = '/Users/denirz/outfile.txt'
         upload = copy.deepcopy(self.cmd)

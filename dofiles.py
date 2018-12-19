@@ -110,7 +110,7 @@ def main():
         url=bucket.generate_url(key,ExpiresIn=validitytime)
         print u"Generating Url file with key \"{}\"  to the current directory".format(key)
         print url
-        print "link valid during {} hours".format(validitytime / 3600)
+        print u"link valid during {} hours".format(validitytime / 3600)
 
     if res.uploadfile:
         """
@@ -140,7 +140,7 @@ def main():
 
     if res.downloadfilename:
         if not res.key:
-            print "please provide key"
+            print u"please provide key"
             exit(0)
         key = res.key[0]
         print u"Downloading file with key \"{}\"  to the current directory".format(key)
@@ -149,7 +149,12 @@ def main():
             fname = bucket.downloadfile(key=key)
             print u"File \"{}\" downloaded".format(fname)
         except AssertionError as e:
-            print "Key \"{}\" not found".format(key)
+            print u"Key \"{}\" not found, trying directory...".format(key)
+            flist = bucket.downloadtoautopath(key)
+            print "Downloaded Files:"
+            for i in flist:
+                print i
+
         finally:
             exit(0)
 

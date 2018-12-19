@@ -1,6 +1,10 @@
 #coding:utf-8
 from unittest import TestCase
 from do_spaces_utils import getdir,create_subdir_structure
+import os
+import re
+import shutil
+
 
 class TestGetdir(TestCase):
     def test_getdir(self):
@@ -46,6 +50,14 @@ class TestGetdir(TestCase):
 
 class TestCreateSreuct(TestCase):
     def test_create_subdir_structure(self):
-        key = u'/Users/denirz/Documents/Development/DOSpaces/tests/ds/as'
+        key = u'/Users/denirz/Documents/Development/DOSpaces/tests/dd/ase/se'
+        dest = getdir(key)
+        print dest
         res = create_subdir_structure(key)
+        if res:
+            self.assertTrue(os.path.isdir(res))
+            pattern = re.compile(dest + '/(.*)')
+            created  = pattern.search(res).group(1).split('/')[0]
+            print "to delete {}".format(dest+'/'+created)
+            shutil.rmtree(dest+'/'+created)
         print res

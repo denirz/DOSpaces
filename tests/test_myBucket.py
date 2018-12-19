@@ -5,8 +5,15 @@ from do_spaces_utils import auth, MyBucket
 import random
 import os
 import time
+import shutil
 
 class TestMyBucket(TestCase):
+    def setUp(self):
+        expdir = u'/Users/denirz/Documents/Development/DOSpaces/tests/upload/dir1/'
+        self.expdir=expdir
+        if os.path.isdir(expdir):
+            shutil.rmtree(expdir)
+
     def test_auth(self):
         bt=auth()
         self.assertGreater(bt.objects.iterator().__sizeof__(),2)
@@ -206,3 +213,42 @@ class TestMyBucket(TestCase):
         key = '/Users/denirz/Downloads/Киоски.pd'
         with self.assertRaises(AssertionError):
             url = b.generate_url(key)
+
+    def test_downloadtoautopath(self):
+        '''
+        filepath = u'/Users/denirz/Documents/Development/DOSpaces/tests/upload/dir1/upload.txt'
+        expdir = u'/Users/denirz/Documents/Development/DOSpaces/tests/upload/dir1/'
+        shutil.copytree(expdir[:-1] + "_1",expdir)
+                 # shutil.copytree(expdir,expdir[:-1]+"_1")
+
+        b.putdir(u'/Users/denirz/Documents/Development/DOSpaces/tests/upload/')
+        # print res0
+        shutil.rmtree(expdir)
+        '''
+
+        b = MyBucket()
+        res = b.list_key_prefix(u'/Users/denirz/Documents/Development/DOSpaces/tests/upload/dir1')
+        res = b.downloadtoautopath(res[1])
+        print res
+        res = b.downloadtoautopath(self.expdir)
+        print res
+        pass
+
+
+class Test_downloadto_autopath(TestCase):
+    def test_download(self):
+        b = MyBucket()
+        # res = b.list_key_prefix(u'/Users/denirz/Documents')
+        # for i in res:
+        #     print i
+
+        filename = '/Users/denirz/Documents/From Previous/OldDocuments/Нис/04_WEB Сервер/vmswebclient_distr/WMS-web_client/yii/framework/views/sv/exception.php'
+        direct = '/Somwnewdir/ad'
+        res = b.downloadtoautopath(filename)
+        print res
+        self.assertTrue(os.path.isfile(filename))
+        # os.rmdir('/Users/denirz/Documents/From Previous/OldDocuments/')
+        res = b.downloadtoautopath(direct)
+        for i in res:
+            print i
+
