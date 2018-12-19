@@ -51,18 +51,19 @@ def checkfilename(inputstr):
     else:
         return False
 
+
 def getdir(inputstr):
-    '''
-    возвращает самый длинный существующий каталог из указанной входной строки ( ключа)
+    """возвращает самый длинный существующий каталог из указанной входной строки ( ключа)
     :param inputstr:
     :return:
-    '''
+    """
     parts = inputstr.split('/')
     for i in range(len(parts)):
         res = "/".join(parts[:-(i+1)])
         if os.path.isdir(res):
             return res.rstrip('/')
     return '/'
+
 
 def create_subdir_structure(inputstr):
     """
