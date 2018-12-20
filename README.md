@@ -16,7 +16,7 @@ before using  copy spaces.cfg.defaults to space.cfg  and put there your identiti
 
 __python dofiles.py  -l__ lists all files
 
-__python dofiles.py  -u <filename>__ uploads filename to storage
+__python dofiles.py  -u local_filename__ uploads filename to storage
 
-__python dofiles.py  -d -k <filename>__  downloads  filename to storage
+__python dofiles.py  -d -k key_filename__  downloads  filename to storage
 
