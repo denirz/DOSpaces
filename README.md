@@ -12,11 +12,11 @@ Mainly created in educational purposes
 ## config.cfg
 before using  copy spaces.cfg.defaults to space.cfg  and put there your identities.
 
-##Main usage
+## Main usage
 
-_python dofiles.py  -l_ lists all files
+__python dofiles.py  -l__ lists all files
 
-_python dofiles.py  -u <filename>_ uploads filename to storage
+__python dofiles.py  -u <filename>__ uploads filename to storage
 
-_python dofiles.py  -d -k <filename>_  downloads  filename to storage
+__python dofiles.py  -d -k <filename>__  downloads  filename to storage
 
