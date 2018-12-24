@@ -1,34 +1,47 @@
-#coding:utf-8
+# coding:utf-8
+"""
+ Main commnad line module
+"""
+
 import argparse
-import do_spaces_utils
+import codecs
 import os
 import sys
-import codecs
+
+import do_spaces_utils
+
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
+
 def main():
+    """
+    Main Function  to be run with command line
+    :return:
+    """
     parser = argparse.ArgumentParser(description='Digital Ocean Spaces Files')
 
-    parser.add_argument('-l','--list',dest='list', action='store_true', default=False,
+    parser.add_argument('-l', '--list',
+                        dest='list', action='store_true', default=False,
                         help="list all files"
-                        )
+                       )
 
-    parser.add_argument('-u','--upload',
+    parser.add_argument('-u', '--upload',
                         action='store',
                         nargs=1,
-                        dest = 'uploadfile', # todo сделать так чтобы этот filename в helpе показывался правильно
+                        dest="uploadfile",
+                        # todo сделать так чтобы этот filename в helpе показывался правильно
                         type=lambda s: unicode(s, 'utf8'),
-                        help = "Upload file"
-                        )
+                        help="Upload file"
+                       )
 
-    parser.add_argument("-d",'--download',
+    parser.add_argument("-d", '--download',
                         action='store_true',
                         # nargs="*",
-                        dest= 'downloadfilename',
-                        help='Download file '
-                        )
+                        dest='downloadfilename',
+                        help='Download file'
+                       )
 
-    parser.add_argument('-k','--key',
+    parser.add_argument('-k', '--key',
                         action='store',
                         nargs=1,
                         dest='key',
@@ -71,21 +84,20 @@ def main():
 
     if res.list:
         """
-        Просто печатает список файлов  
+        Просто печатает список файлов
         """
-        print "LIST Files"
+        print u"LIST Files"
         if not res.key:
-            for  key in do_spaces_utils.MyBucket().listfiles():
+            for key in do_spaces_utils.MyBucket().listfiles():
                 print key
             exit(0)
         else:
             if res.depth:
-                print u"Keys with prefix \"{}\" and depth {}".format(res.key[0],res.depth[0])
-                for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0],depth=res.depth[0]):
+                print u"Keys with prefix \"{}\" and depth {}".\
+                    format(res.key[0], res.depth[0])
+                for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0], depth=res.depth[0]):
                     # print u"{}".format(key)
                     print key
-
-                pass
             else:
                 print u"Keys with prefix \"{}\"".format(res.key[0])
                 for key in do_spaces_utils.MyBucket().list_key_prefix(res.key[0]):
@@ -94,31 +106,30 @@ def main():
         exit(0)
 
     if res.validitytime != None:  #   то есть если флаг link вообще установлен
-        validitytime = 3600  if len(res.validitytime)==0 else res.validitytime[0]*3600
+        validitytime = 3600 if not res.validitytime else res.validitytime[0]*3600
 
         if not res.key:
             print "please ptovide key!"
             exit(0)
         key = res.key[0]
         # print u"Generating Url file with key \"{}\"  to the current directory".format(key)
-        bucket= do_spaces_utils.MyBucket()
+        bucket = do_spaces_utils.MyBucket()
         try:
             bucket.is_key_valid(key)
         except AssertionError:
             print u"Key {} not found".format(key)
             exit(0)
-        url=bucket.generate_url(key,ExpiresIn=validitytime)
+        url = bucket.generate_url(key, expires_in=validitytime)
         print u"Generating Url file with key \"{}\"  to the current directory".format(key)
         print url
         print u"link valid during {} hours".format(validitytime / 3600)
 
     if res.uploadfile:
-        """
-        загружает файл  при необходимости используя заданный ключ 
-        """
+        #загружает файл  при необходимости используя заданный ключ
         bucket = do_spaces_utils.MyBucket()
         if res.key and (res.key != '-'):
-            print u" NOT IMplemeted Yet! \nuploading file \'{}\' with key {} ".format(res.uploadfile[0],res.key)
+            print u" NOT IMplemeted Yet! \nuploading file \'{}\' with key {} ".\
+                format(res.uploadfile[0], res.key)
             #todo реализовать это позднее - чтобы можно было указывать ключ при загрузке файла
 
         else:
@@ -148,7 +159,7 @@ def main():
         try:
             fname = bucket.downloadfile(key=key)
             print u"File \"{}\" downloaded".format(fname)
-        except AssertionError as e:
+        except AssertionError:
             print u"Key \"{}\" not found, trying directory...".format(key)
             flist = bucket.downloadtoautopath(key)
             print u"Downloaded Files:"
@@ -169,5 +180,5 @@ def main():
         exit(0)
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
