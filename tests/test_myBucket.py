@@ -252,3 +252,12 @@ class Test_downloadto_autopath(TestCase):
         for i in res:
             print i
 
+class  Test_comparetodir(TestCase):
+    def setUp(self):
+        self.b = MyBucket()
+        self.testdir  = u'/Users/denirz/BitTorrent Sync/iMedia'
+        self.testdir  = u'/Users/denirz/BitTorrent Sync'
+
+    def test_comparetodir(self):
+        self.b.comparetodir(self.testdir)
+
